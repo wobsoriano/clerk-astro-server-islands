@@ -64,33 +64,69 @@ To run the example locally, you need to:
 
 ## Server Islands Examples
 
-This quickstart includes several examples demonstrating Astro Server Islands with Clerk authentication:
+This quickstart demonstrates Astro Server Islands with Clerk authentication components. All Clerk components (`SignedIn`, `SignedOut`, `Protect`, `UserButton`) fully support server islands.
 
 ### What are Server Islands?
 
 Server islands allow you to have dynamic, server-rendered content that loads at request time. They work on both:
-- **Prerendered pages**: Add dynamic content to static pages (e.g., auth checks)
+- **Prerendered pages** (`export const prerender = true`): Add dynamic content to static pages
 - **SSR pages**: Defer expensive operations for faster initial page loads
 
 ### Example Pages
 
-1. **[/prerendered](http://localhost:4321/prerendered)** - Prerendered page with server islands
-   - Demonstrates `SignedIn`, `SignedOut`, and `Protect` components with `server:defer`
-   - Shows authentication status checked at request time on a static page
-   - Includes role-based and permission-based access control examples
-   - Uses the `protect-fallback` slot for unauthorized states
+#### [/prerendered](http://localhost:4321/prerendered)
+Static page with dynamic authentication via server islands. Includes:
+- `SignedIn` / `SignedOut` components with `server:defer`
+- `Protect` component for role-based access control (`role="admin"`)
+- API route call demonstrating server-to-server cookie forwarding
+- Direct server context access via `Astro.locals.auth()`
+- Loading spinner fallbacks for all server islands
 
-2. **[/ssr-example](http://localhost:4321/ssr-example)** - SSR page with server islands
-   - Non-prerendered page that's fully server-side rendered on every request
-   - Shows how server islands work on regular SSR pages for deferred loading
-   - Demonstrates faster initial page renders by deferring auth checks
+#### [/ssr-example](http://localhost:4321/ssr-example)
+Fully server-rendered page showing deferred auth checks:
+- Same server islands as prerendered page
+- Demonstrates faster initial page render by deferring auth operations
+- Shows server render timestamp that changes on each request
+
+### Features Demonstrated
+
+**Clerk Components with Server Islands:**
+```astro
+<SignedIn server:defer>
+  <p>Authenticated content</p>
+  <div slot="fallback"><LoadingSpinner /></div>
+</SignedIn>
+
+<Protect role="admin" server:defer>
+  <p>Admin content</p>
+  <div slot="protect-fallback">Access denied</div>
+  <div slot="fallback"><LoadingSpinner /></div>
+</Protect>
+```
+
+**API Route with Cookie Forwarding:**
+```astro
+<!-- Component fetches from /api/user -->
+<UserFromAPI server:defer>
+  <div slot="fallback"><LoadingSpinner /></div>
+</UserFromAPI>
+```
+
+**Direct Server Context Access:**
+```astro
+---
+const { userId } = Astro.locals.auth();
+---
+<p>User ID: {userId}</p>
+```
 
 ### Key Concepts
 
-- **`export const prerender = true`** - Marks a page for prerendering at build time
 - **`server:defer` directive** - Creates a server island that executes at request time
-- **`protect-fallback` slot** - Used with Protect component to show content when authorization fails
-- **Dynamic authentication on static pages** - Server islands check auth status at request time, even on prerendered pages
+- **`protect-fallback` slot** - Shows content when authorization fails (separate from loading fallback)
+- **`fallback` slot** - Shows loading state while server island loads
+- **Server-to-server cookies** - Cookies automatically forwarded in server-side fetch requests
+- **`Astro.locals.auth()`** - Access authentication context directly in server components
 
 ## Learn more
 

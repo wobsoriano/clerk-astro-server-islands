@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 import LoadingSpinner from '../components/LoadingSpinner.astro'
 import UserFromAPI from '../components/UserFromAPI.astro'
+import UserFromAction from '../components/UserFromAction.astro'
 import { SignedIn, SignedOut } from '@clerk/astro/components'
 
 // NO prerender = true! This is fully SSR
@@ -56,6 +57,15 @@ const serverRenderTime = new Date().toLocaleTimeString()
             <LoadingSpinner />
           </div>
         </UserFromAPI>
+      </div>
+
+      <div class="border rounded p-4">
+        <p class="font-semibold mb-2">Deferred Action</p>
+        <UserFromAction server:defer>
+          <div slot="fallback" class="border rounded p-4">
+            <LoadingSpinner />
+          </div>
+        </UserFromAction>
       </div>
     </div>
   </main>

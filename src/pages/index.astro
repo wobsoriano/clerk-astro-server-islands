@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Clerk + Astro">
+  <main class="max-w-4xl mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-8">Server Islands Examples</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <a href="/prerendered" class="border rounded p-6 hover:border-blue-500">
+        <div class="text-3xl mb-2">🏝️</div>
+        <h3 class="font-semibold">Prerendered</h3>
+        <p class="text-sm text-gray-600">SignedIn, SignedOut, Protect on static page</p>
+      </a>
+
+      <a href="/ssr-example" class="border rounded p-6 hover:border-blue-500">
+        <div class="text-3xl mb-2">⚡</div>
+        <h3 class="font-semibold">SSR Page</h3>
+        <p class="text-sm text-gray-600">Deferred loading on SSR</p>
+      </a>
+    </div>
+  </main>
+</Layout>

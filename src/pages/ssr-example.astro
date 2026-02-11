@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro'
+import LoadingSpinner from '../components/LoadingSpinner.astro'
+import UserFromAPI from '../components/UserFromAPI.astro'
+import { SignedIn, SignedOut } from '@clerk/astro/components'
+
+// NO prerender = true! This is fully SSR
+const serverRenderTime = new Date().toLocaleTimeString()
+---
+
+<Layout title="SSR Page">
+  <main class="max-w-4xl mx-auto p-8">
+    <h1 class="text-2xl font-bold mb-2">SSR Page</h1>
+    <p class="text-sm text-gray-600 mb-8">
+      No <code class="bg-gray-100 px-1 rounded">prerender</code> - rendered on every request
+    </p>
+
+    <div class="border rounded p-4 mb-6">
+      <p class="text-sm">
+        <strong>Rendered at:</strong> {serverRenderTime}
+      </p>
+      <p class="text-xs text-gray-600">Refresh to see it change</p>
+    </div>
+
+    <div class="space-y-4">
+      <div class="border rounded p-4">
+        <p class="font-semibold mb-2">Fast Initial Content</p>
+        <p class="text-sm text-gray-600">This content renders immediately</p>
+      </div>
+
+      <SignedIn server:defer>
+        <div class="border border-green-500 rounded p-4">
+          <p class="font-semibold">✓ Signed In</p>
+          <p class="text-sm text-gray-600">Auth check deferred via server island</p>
+        </div>
+        <div slot="fallback" class="border rounded p-4">
+          <LoadingSpinner />
+        </div>
+      </SignedIn>
+
+      <SignedOut server:defer>
+        <div class="border border-yellow-500 rounded p-4">
+          <p class="font-semibold">→ Signed Out</p>
+          <p class="text-sm text-gray-600 mb-2">Auth check deferred via server island</p>
+          <a href="/signin" class="text-blue-600 text-sm hover:underline">Sign In</a>
+        </div>
+        <div slot="fallback" class="border rounded p-4">
+          <LoadingSpinner />
+        </div>
+      </SignedOut>
+
+      <div class="border rounded p-4">
+        <p class="font-semibold mb-2">Deferred API Call</p>
+        <UserFromAPI server:defer>
+          <div slot="fallback" class="border rounded p-4">
+            <LoadingSpinner />
+          </div>
+        </UserFromAPI>
+      </div>
+    </div>
+  </main>
+</Layout>
